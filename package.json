@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "description": "",
   "main": "example-overlay.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vicapow/react-map-gl-example-overlay.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "budo ./example/main.js --live -- -t envify  | bistre",
@@ -16,7 +20,10 @@
     "mapbox-gl",
     "react-map-gl",
     "map-gl",
-    "overlay"
+    "gl",
+    "map",
+    "overlay",
+    "example"
   ],
   "author": "Victor Powell",
   "license": "ISC",
