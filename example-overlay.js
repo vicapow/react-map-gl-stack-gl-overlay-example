@@ -3,37 +3,60 @@
 var React = require('react');
 var window = require('global/window');
 var r = require('r-dom');
-var SVGOverlay = require('react-map-gl/src/overlays/svg.react');
-var assign = require('object-assign');
+var getContext = require('get-canvas-context');
+var glslify = require('glslify');
+var createTexture = require('gl-texture2d');
+var createShader = require('gl-shader');
+var drawTriangle = require('a-big-triangle');
+var baboon = require('baboon-image');
 
-module.exports = React.createClass({
-
-  displayName: 'ExampleOverlay',
+var CanvasOverlay = React.createClass({
+  displayName: 'CanvasOverlay',
 
   propTypes: {
-    locations: React.PropTypes.array.isRequired
+    width: React.PropTypes.number,
+    height: React.PropTypes.number,
+    project: React.PropTypes.func,
+    isDragging: React.PropTypes.bool
+  },
+
+  componentDidMount: function componentDidMount() {
+    var gl = this._ctx = getContext('webgl', {canvas: this.getDOMNode()});
+    this._shader = createShader(gl, glslify('./main.vertex.glsl'),
+      glslify('./main.fragment.glsl'));
+    this._shader.attributes.position.location = 0;
+    this._texture = createTexture(gl, baboon);
+    this._redraw();
+  },
+
+  componentDidUpdate: function componentDidUpdate() {
+    this._redraw();
+  },
+
+  _redraw: function _redraw() {
+    var gl = this._ctx;
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    this._shader.bind();
+    this._shader.uniforms.texture = this._texture.bind();
+    drawTriangle(gl);
   },
 
   render: function render() {
-    return r(SVGOverlay, assign({}, this.props, {
-      redraw: function redraw(opt) {
-        return r.g(this.props.locations.map(function map(location) {
-          var pixel = opt.project([location.latitude, location.longitude]);
-          return r.circle({
-            cx: pixel.x,
-            cy: pixel.y,
-            r: 10,
-            style: {
-              fill: 'rgba(0, 0, 0, 0.5)',
-              pointerEvents: 'all',
-              cursor: 'pointer'
-            },
-            onClick: function onClick() {
-              window.location.href = 'https://en.wikipedia.org' + location.wiki;
-            }
-          });
-        }));
-      }.bind(this)
-    }));
+    var pixelRatio = window.devicePixelRatio || 1;
+    return r.canvas({
+      ref: 'overlay',
+      width: this.props.width * pixelRatio,
+      height: this.props.height * pixelRatio,
+      style: {
+        width: this.props.width + 'px',
+        height: this.props.height + 'px',
+        position: 'absolute',
+        pointerEvents: 'none',
+        left: 0,
+        top: 0
+      }
+    });
   }
 });
+
+module.exports = CanvasOverlay;
