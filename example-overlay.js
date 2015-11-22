@@ -5,10 +5,9 @@ var window = require('global/window');
 var r = require('r-dom');
 var getContext = require('get-canvas-context');
 var glslify = require('glslify');
-var createTexture = require('gl-texture2d');
 var createShader = require('gl-shader');
-var drawTriangle = require('a-big-triangle');
-var baboon = require('baboon-image');
+var createVAO = require('gl-vao');
+var createBuffer = require('gl-buffer');
 
 var CanvasOverlay = React.createClass({
   displayName: 'CanvasOverlay',
@@ -22,10 +21,15 @@ var CanvasOverlay = React.createClass({
 
   componentDidMount: function componentDidMount() {
     var gl = this._ctx = getContext('webgl', {canvas: this.getDOMNode()});
-    this._shader = createShader(gl, glslify('./main.vertex.glsl'),
+    this._shader = createShader(gl,
+      glslify('./main.vertex.glsl'),
       glslify('./main.fragment.glsl'));
     this._shader.attributes.position.location = 0;
-    this._texture = createTexture(gl, baboon);
+    this._vao = createVAO(gl, [{
+      buffer: createBuffer(gl, [-0.5, -0.5, 0.5, 0.5]),
+      type: gl.FLOAT,
+      size: 2
+    }]);
     this._redraw();
   },
 
@@ -35,10 +39,13 @@ var CanvasOverlay = React.createClass({
 
   _redraw: function _redraw() {
     var gl = this._ctx;
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.enable(gl.DEPTH_TEST);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     this._shader.bind();
-    this._shader.uniforms.texture = this._texture.bind();
-    drawTriangle(gl);
+    this._vao.bind();
+    this._vao.draw(gl.POINTS, 2);
+    this._vao.unbind();
   },
 
   render: function render() {

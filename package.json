@@ -37,9 +37,11 @@
     "baboon-image": "^2.0.0",
     "example-cities": "0.0.0",
     "get-canvas-context": "^1.0.1",
+    "gl-buffer": "^2.1.2",
     "gl-now": "^1.4.0",
     "gl-shader": "^4.0.6",
     "gl-texture2d": "^2.0.10",
+    "gl-vao": "^1.2.1",
     "global": "^4.3.0",
     "glslify": "^2.3.1",
     "object-assign": "^4.0.1"
