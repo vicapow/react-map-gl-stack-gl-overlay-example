@@ -1,11 +1,11 @@
 {
-  "name": "react-map-gl-example-overlay",
+  "name": "react-map-gl-stack-gl-overlay-example",
   "version": "0.0.0",
   "description": "",
   "main": "example-overlay.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vicapow/react-map-gl-example-overlay.git"
+    "url": "https://github.com/vicapow/react-map-gl-stack-gl-overlay-example.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -20,6 +20,7 @@
     "mapbox-gl",
     "react-map-gl",
     "map-gl",
+    "stack-gl",
     "gl",
     "map",
     "overlay",
@@ -33,8 +34,6 @@
     "react": "^0.13.3"
   },
   "dependencies": {
-    "a-big-triangle": "^1.0.2",
-    "baboon-image": "^2.0.0",
     "example-cities": "0.0.0",
     "get-canvas-context": "^1.0.1",
     "gl-buffer": "^2.1.2",

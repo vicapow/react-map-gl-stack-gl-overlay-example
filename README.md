@@ -1,13 +1,13 @@
-# react-map-gl-example-overlay
+# react-map-gl-stack-gl-overlay-example
 
-An example of a standalone react-map-gl-overlay
+An example of a standalone react-map-gl-stack-gl-overlay-example
 
 ![](screenshot.png)
 
 ## Usage
 
 ````js
-var ExampleOverlay = require('react-map-gl-example-overlay');
+var ExampleOverlay = require('react-map-gl-stack-gl-overlay-example');
 var cities = require('example-cities');
 ````
 
