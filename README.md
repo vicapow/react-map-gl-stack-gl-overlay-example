@@ -1,22 +1,20 @@
 # react-map-gl-stack-gl-overlay-example
 
-An example of a standalone react-map-gl-stack-gl-overlay-example
+An experiment in using stackGL in a
+[react-map-gl](https://github.com/uber/react-map-gl) overlay.
 
-![](screenshot.png)
+![](demo.gif)
 
 ## Usage
 
 ````js
-var ExampleOverlay = require('react-map-gl-stack-gl-overlay-example');
-var cities = require('example-cities');
-````
-
-Where each element in cities looks like: `{latitude, longitude}`.
-
-````js
     render: function render() {
       return <MapGL ...viewportProps>
-        <ExampleOverlay locations={cities} />
+        <ExampleOverlay
+          latitude={viewportProps.latitude}
+          longitude={viewportProps.longitude}
+          zoom={viewportProps.zoom}
+          locations={cities} />
       </MapGL>;
     }
 ````

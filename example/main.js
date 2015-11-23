@@ -1,6 +1,7 @@
 'use strict';
 
 var document = require('global/document');
+var Immutable = require('immutable');
 var window = require('global/window');
 var React = require('react');
 var r = require('r-dom');
@@ -8,8 +9,9 @@ var MapGL = require('react-map-gl');
 var process = require('global/process');
 var ExampleOverlay = require('../example-overlay');
 var assign = require('object-assign');
+var d3 = require('d3');
 
-var locations = require('example-cities');
+// var locations = require('example-cities');
 
 // This will get converted to a string by envify
 /* eslint-disable no-process-env */
@@ -39,10 +41,24 @@ var App = React.createClass({
         appHeight: window.innerHeight
       });
     }.bind(this));
+    d3.csv('/picks.csv', function accessor(row) {
+      return [Number(row.longitude), Number(row.latitude)];
+    }, function response(error, trips) {
+      if (error) {
+        throw error;
+      }
+      var t = Date.now();
+      this.setState({trips: Immutable.fromJS(trips)});
+      console.log(Date.now() - t);
+    }.bind(this));
   },
 
   _onChangeViewport: function _onChangeViewport(viewport) {
     this.setState({viewport: viewport});
+  },
+
+  _tripLngLatAccessor: function _tripLngLatAccessor(trip) {
+    return [trip.get(0), trip.get(1)];
   },
 
   render: function render() {
@@ -53,7 +69,13 @@ var App = React.createClass({
       onChangeViewport: this._onChangeViewport
     });
     return r(MapGL, props, [
-      r(ExampleOverlay, {locations: locations})
+      this.state.trips ? r(ExampleOverlay, {
+        locations: this.state.trips,
+        lngLatAccessor: this._tripLngLatAccessor,
+        zoom: this.state.viewport.zoom,
+        longitude: this.state.viewport.longitude,
+        latitude: this.state.viewport.latitude
+      }) : null
     ]);
   }
 });
