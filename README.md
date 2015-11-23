@@ -16,7 +16,15 @@ This demo uses data from http://www.andresmh.com/nyctaxitrips/
           latitude={viewportProps.latitude}
           longitude={viewportProps.longitude}
           zoom={viewportProps.zoom}
-          locations={cities} />
+          locations={locations} />
       </MapGL>;
     }
 ````
+
+## To install
+
+    npm install
+
+## To run
+
+    npm run start
