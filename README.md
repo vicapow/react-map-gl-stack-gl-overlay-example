@@ -5,6 +5,8 @@ An experiment in using stackGL in a
 
 ![](demo.gif)
 
+This demo uses data from http://www.andresmh.com/nyctaxitrips/
+
 ## Usage
 
 ````js
