@@ -1,7 +1,6 @@
 'use strict';
 
 var document = require('global/document');
-var Immutable = require('immutable');
 var window = require('global/window');
 var React = require('react');
 var r = require('r-dom');

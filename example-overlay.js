@@ -2,7 +2,6 @@
 
 var React = require('react/addons');
 var PureRenderMixin = React.addons.PureRenderMixin;
-var Immutable = require('immutable');
 var window = require('global/window');
 var r = require('r-dom');
 var getContext = require('get-canvas-context');
@@ -34,7 +33,7 @@ var CanvasOverlay = React.createClass({
   getDefaultProps: function getDefaultProps() {
     return {
       lngLatAccessor: function defaultLocationAccessor(location) {
-        return [location[0], location[1]];
+        return location;
       }
     };
   },
@@ -49,10 +48,18 @@ var CanvasOverlay = React.createClass({
     var ret = [];
     var locations = this.props.locations || [];
     var location;
+    var x;
+    var y;
+    var phi;
+    var lamda;
     for (var i = 0; i < locations.length; i++) {
       location = this.props.lngLatAccessor(locations[i]);
-      ret.push(location[0]);
-      ret.push(location[1]);
+      lamda = location[0] * DEGREES_TO_RADIANS;
+      phi = location[1] * DEGREES_TO_RADIANS;
+      x = lamda + Math.PI;
+      y = PI - Math.log(Math.tan(PI * 0.25 + phi * 0.5));
+      ret.push(x);
+      ret.push(y);
     }
     return ret;
   },

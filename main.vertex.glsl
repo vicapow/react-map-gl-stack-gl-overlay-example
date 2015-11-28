@@ -13,15 +13,8 @@ uniform float pointSize;
 
 varying vec4 fragColor;
 
-vec2 project(vec2 lngLat) {
-  float lamda = radians(lngLat.x);
-  float phi = radians(lngLat.y);
-  vec2 tilePos = vec2(lamda + PI, PI - log(tan(PI / 4.0 + phi / 2.0)));
-  return offset + tilePos * scale;
-}
-
 void main() {
-  vec2 point = project(coordinate);
+  vec2 point = offset + coordinate * scale;
   vec2 position = (point / dimensions * 2.0 - 1.0) * vec2(1.0, -1.0);
   gl_Position = vec4(position, 0.0, 1.0);
   gl_PointSize = pointSize;
