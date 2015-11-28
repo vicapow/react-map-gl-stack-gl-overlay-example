@@ -47,18 +47,12 @@ var App = React.createClass({
       if (error) {
         throw error;
       }
-      var t = Date.now();
-      this.setState({trips: Immutable.fromJS(trips)});
-      console.log(Date.now() - t);
+      this.setState({trips: trips});
     }.bind(this));
   },
 
   _onChangeViewport: function _onChangeViewport(viewport) {
     this.setState({viewport: viewport});
-  },
-
-  _tripLngLatAccessor: function _tripLngLatAccessor(trip) {
-    return [trip.get(0), trip.get(1)];
   },
 
   render: function render() {

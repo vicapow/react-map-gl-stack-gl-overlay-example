@@ -27,14 +27,14 @@ var CanvasOverlay = React.createClass({
     latitude: React.PropTypes.number.isRequired,
     longitude: React.PropTypes.number.isRequired,
     isDragging: React.PropTypes.bool,
-    locations: React.PropTypes.instanceOf(Immutable.List).isRequired,
+    locations: React.PropTypes.array.isRequired,
     lngLatAccessor: React.PropTypes.func.isRequired
   },
 
   getDefaultProps: function getDefaultProps() {
     return {
       lngLatAccessor: function defaultLocationAccessor(location) {
-        return [location.get('longitude'), location.get('latitude')];
+        return [location[0], location[1]];
       }
     };
   },
@@ -49,9 +49,8 @@ var CanvasOverlay = React.createClass({
     var ret = [];
     var locations = this.props.locations || [];
     var location;
-    var length = locations.size;
-    for (var i = 0; i < length; i++) {
-      location = this.props.lngLatAccessor(locations.get(i));
+    for (var i = 0; i < locations.length; i++) {
+      location = this.props.lngLatAccessor(locations[i]);
       ret.push(location[0]);
       ret.push(location[1]);
     }
@@ -102,14 +101,15 @@ var CanvasOverlay = React.createClass({
     var x = scale * (lamda + Math.PI);
     var y = scale * (PI - Math.log(Math.tan(PI * 0.25 + phi * 0.5)));
     var offset = [-x + dimensions[0] / 2, -y + dimensions[1] / 2];
-    this._shader.uniforms.alpha = 0.5;
-    this._shader.uniforms.pointSize = 2;
+    this._shader.uniforms.alpha = 0.1;
+    this._shader.uniforms.pointSize = 4;
     this._shader.uniforms.scale = scale;
     this._shader.uniforms.offset = offset;
     this._shader.uniforms.dimensions = [this.props.width, this.props.height];
-    this._shader.uniforms.color = [231 / 255, 76 / 255, 60 / 255, 1];
+    this._shader.uniforms.color = [31 / 255, 186 / 255, 214 / 255, 1];
+    // this._shader.uniforms.color = [231 / 255, 76 / 255, 60 / 255, 1];
     this._vao.bind();
-    this._vao.draw(gl.POINTS, this.props.locations.size);
+    this._vao.draw(gl.POINTS, this.props.locations.length);
     this._vao.unbind();
   },
 
