@@ -22,7 +22,8 @@ varying vec4 fragColor;
 vec2 split(float a) {
   const float SPLIT = 4097.0; // (1 << 12) + 1;
   float t = a * SPLIT;
-  float ahi = t - (float(t - a) * 1.0);
+  float ahi = t - (t - a);
+  // float ahi = - a;
   float alo = a - ahi;
   return vec2(ahi, alo);
 }
@@ -81,8 +82,8 @@ vec2 ds_mul(vec2 dsa, vec2 dsb) {
   cona = dsa.x * split;
   conb = dsb.x * split;
   
-  a1 = cona - cona - dsa.x;
-  b1 = conb - conb - dsb.x;
+  a1 = cona - (cona - dsa.x);
+  b1 = conb - (conb - dsb.x);
   a2 = dsa.x - a1;
   b2 = dsb.x - b1;
 

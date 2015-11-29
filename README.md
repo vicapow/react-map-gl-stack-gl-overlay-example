@@ -31,13 +31,19 @@ However, there currently are issues with implementing `df64mult` that is causing
 jitter while zooming at hi zoom levels but panning works well.
 
 
-#### Panning demo
+Panning demo
 
 ![](lng-lat-pan-no-jitter.gif)
 
-#### Zomming jitter demo
+Zomming jitter demo
 
 ![](lng-lat-jitter.gif)
+
+This might be caused by the GLSL compiler optimizing away things like `float ahi = t - (t - a);`.  This idea was original mentioned by [Mikael Hvidtfeldt Christensen](http://blog.hvidtfeldts.net/index.php/about/) in his [Double Precision in OpenGL and WebGL](http://blog.hvidtfeldts.net/index.php/2012/07/double-precision-in-opengl-and-webgl/).
+
+But interestingly, if we replace `float ahi = t - (t - a);` with `float ahi = -a;`, we slightly more jitter.
+
+![](lng-lat-check-for-optimization.gif)
 
 ## To install
 
