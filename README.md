@@ -31,6 +31,11 @@ coordinate as a double using two float values and uses the double-float
 functions from [Andrew Thall](http://andrewthall.org/)'s
 [Extended-Precision Floating-Point Numbers for GPU Computation](http://andrewthall.org/papers/df64_qf128.pdf).
 
+See also:
+
+1. [Improving precision in your vertex transform](http://github.prideout.net/emulating-double-precision/)
+2. [Double Precision in OpenGL and WebGL](http://blog.hvidtfeldts.net/index.php/2012/07/double-precision-in-opengl-and-webgl/)
+3. [Heavy computing with GLSL – Part 2: Emulated double precision](https://www.thasler.com/blog/blog/glsl-part2-emu)
 
 ## To install
 
