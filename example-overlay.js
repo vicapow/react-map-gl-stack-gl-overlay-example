@@ -73,8 +73,10 @@ var CanvasOverlay = React.createClass({
       location = this.props.lngLatAccessor(locations[i]);
       lamda = location[0] * DEGREES_TO_RADIANS;
       phi = location[1] * DEGREES_TO_RADIANS;
+      // [0, 2π]
       x = lamda + Math.PI;
-      y = PI - Math.log(Math.tan(PI * 0.25 + phi * 0.5));
+      // [0, 2π]
+      y = PI + Math.log(Math.tan(PI * 0.25 + phi * 0.5));
       xHiLo = split(x);
       yHiLo = split(y);
       ret.push(xHiLo[0]);
@@ -127,7 +129,7 @@ var CanvasOverlay = React.createClass({
     var lamda = lnglat[0] * DEGREES_TO_RADIANS;
     var phi = lnglat[1] * DEGREES_TO_RADIANS;
     var x = scale * (lamda + Math.PI);
-    var y = scale * (PI - Math.log(Math.tan(PI * 0.25 + phi * 0.5)));
+    var y = scale * (PI + Math.log(Math.tan(PI * 0.25 + phi * 0.5)));
     var offset = [-x + dimensions[0] / 2, -y + dimensions[1] / 2];
     this._shader.uniforms.alpha = 0.1;
     this._shader.uniforms.pointSize = 32;

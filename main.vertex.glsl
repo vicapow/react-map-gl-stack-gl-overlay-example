@@ -3,8 +3,8 @@ precision highp float;
 // A "double-float" is a double represented as two floats (hi and lo).
 
 // `coordinate` is a "double-float" of the vertex tile coordinates.
-// coordinate.xy: [0, 1] along the tile X axis
-// coordinate.zw: [0, 1] along the tile Y axis
+// coordinate.xy: [0, 2π] along the tile X axis
+// coordinate.zw: [0, 2π] along the tile Y axis
 attribute vec4 coordinate;
 
 // A "double-float" of the current scale on the tile.
@@ -109,7 +109,7 @@ void main() {
 
   vec2 point = vec2(x.x, y.x);
 
-  vec2 position = (point / dimensions * 2.0 - 1.0) * vec2(1.0, -1.0);
+  vec2 position = (point / dimensions * 2.0 - 1.0);
   gl_Position = vec4(position, 0.0, 1.0);
   gl_PointSize = pointSize;
   fragColor = color;
