@@ -74,6 +74,7 @@ vec2 df64add(vec2 a, vec2 b) {
 }
 
 // From: https://www.thasler.com/blog/blog/glsl-part2-emu
+// Which was orignally from dsfun90: http://crd-legacy.lbl.gov/~dhbailey/mpdist/
 vec2 ds_mul(vec2 dsa, vec2 dsb) {
   vec2 dsc;
   float c11, c21, c2, e, t1, t2;
