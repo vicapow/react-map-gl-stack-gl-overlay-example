@@ -10,7 +10,7 @@ attribute vec4 coordinate;
 // A "double-float" of the current scale on the tile.
 uniform vec2 scale;
 // A "double-float" of the current tile offset coordinates.
-uniform vec4 offset;
+uniform vec4 center;
 uniform vec2 dimensions;
 uniform vec4 color;
 uniform float alpha;
@@ -18,7 +18,7 @@ uniform float pointSize;
 
 varying vec4 fragColor;
 
-// From: http://andrewthall.org/papers/df64_qf128.pdf
+// Originally from: http://andrewthall.org/papers/df64_qf128.pdf
 vec2 split(float a) {
   const float SPLIT = 4097.0; // (1 << 12) + 1;
   float t = a * SPLIT;
@@ -73,44 +73,26 @@ vec2 df64add(vec2 a, vec2 b) {
   return st.xy;
 }
 
-// From: https://www.thasler.com/blog/blog/glsl-part2-emu
-// Which was orignally from dsfun90: http://crd-legacy.lbl.gov/~dhbailey/mpdist/
-vec2 ds_mul(vec2 dsa, vec2 dsb) {
-  vec2 dsc;
-  float c11, c21, c2, e, t1, t2;
-  float a1, a2, b1, b2, cona, conb, split = 8193.0;
-
-  cona = dsa.x * split;
-  conb = dsb.x * split;
-  
-  a1 = cona - (cona - dsa.x);
-  b1 = conb - (conb - dsb.x);
-  a2 = dsa.x - a1;
-  b2 = dsb.x - b1;
-
-  c11 = dsa.x * dsb.x;
-  c21 = a2 * b2 + (a2 * b1 + (a1 * b2 + (a1 * b1 - c11)));
-
-  c2 = dsa.x * dsb.y + dsa.y * dsb.x;
-
-  t1 = c11 + c2;
-  e = t1 - c11;
-  t2 = dsa.y * dsb.y + ((c2 - e) + (c11 - (t1 - e))) + c21;
-
-  dsc.x = t1 + t2;
-  dsc.y = t2 - (dsc.x - t1);
-
-  return dsc;
-}
-
 void main() {
-  vec2 x = df64add(df64mult(coordinate.xy, scale), offset.xy);
-  vec2 y = df64add(df64mult(coordinate.zw, scale), offset.zw);
+  vec2 centerX = center.xy;
+  vec2 centerY = center.zw;
 
-  vec2 point = vec2(x.x, y.x);
+  vec2 coordX = coordinate.xy;
+  vec2 coordY = coordinate.zw;
 
-  vec2 position = (point / dimensions * 2.0 - 1.0);
-  gl_Position = vec4(position, 0.0, 1.0);
+  vec2 x = df64add(coordX, -centerX);
+  vec2 y = df64add(coordY, -centerY);
+  coordX = x;
+  coordY = y;
+
+  x = df64mult(coordX, scale);
+  y = df64mult(coordY, scale);
+
+  coordX = x;
+  coordY = y;
+
+  vec2 point = vec2(coordX[0], coordY[0]);
+  gl_Position = vec4(point / dimensions * 2.0, 0.0, 1.0);
   gl_PointSize = pointSize;
   fragColor = color;
 }

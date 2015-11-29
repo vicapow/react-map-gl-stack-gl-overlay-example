@@ -13,6 +13,10 @@ var createBuffer = require('gl-buffer');
 var PI = Math.PI;
 var DEGREES_TO_RADIANS = PI / 180;
 
+function radians(degrees) {
+  return degrees * DEGREES_TO_RADIANS;
+}
+
 // Convert a JavaScript double precision Number to the equivalent single
 // precision value.
 function float(value) {
@@ -71,12 +75,12 @@ var CanvasOverlay = React.createClass({
     var yHiLo;
     for (var i = 0; i < locations.length; i++) {
       location = this.props.lngLatAccessor(locations[i]);
-      lamda = location[0] * DEGREES_TO_RADIANS;
-      phi = location[1] * DEGREES_TO_RADIANS;
-      // [0, 2π]
-      x = lamda + Math.PI;
-      // [0, 2π]
-      y = PI + Math.log(Math.tan(PI * 0.25 + phi * 0.5));
+      lamda = radians(location[0]);
+      phi = radians(location[1]);
+      // [0, 1]
+      x = (lamda + Math.PI) / Math.PI * 0.5;
+      // [0, 1]
+      y = (PI + Math.log(Math.tan(PI * 0.25 + phi * 0.5))) / Math.PI * 0.5;
       xHiLo = split(x);
       yHiLo = split(y);
       ret.push(xHiLo[0]);
@@ -116,28 +120,25 @@ var CanvasOverlay = React.createClass({
   _redraw: function _redraw() {
     var gl = this._ctx;
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    // gl.clearColor(0, 0, 0, 1);
     gl.blendFunc(gl.ONE, gl.ONE);
     gl.enable(gl.BLEND);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     this._shader.bind();
     var lnglat = [this.props.longitude, this.props.latitude];
     var zoom = this.props.zoom;
-    var dimensions = [this.props.width, this.props.height];
     var tileSize = 512;
-    var scale = tileSize * 0.5 / PI * Math.pow(2, zoom);
-    var lamda = lnglat[0] * DEGREES_TO_RADIANS;
-    var phi = lnglat[1] * DEGREES_TO_RADIANS;
-    var x = scale * (lamda + Math.PI);
-    var y = scale * (PI + Math.log(Math.tan(PI * 0.25 + phi * 0.5)));
-    var offset = [-x + dimensions[0] / 2, -y + dimensions[1] / 2];
+    var scale = tileSize * Math.pow(2, zoom);
+    var lambda = radians(lnglat[0]);
+    var phi = radians(lnglat[1]);
+    var x = (lambda + Math.PI) / Math.PI * 0.5;
+    var y = (PI + Math.log(Math.tan(PI * 0.25 + phi * 0.5))) / Math.PI * 0.5;
     this._shader.uniforms.alpha = 0.1;
-    this._shader.uniforms.pointSize = 32;
+    this._shader.uniforms.pointSize = 16 * Math.pow(2, zoom - 20);
     this._shader.uniforms.scale = split(scale);
-    this._shader.uniforms.offset = split(offset[0]).concat(split(offset[1]));
+    this._shader.uniforms.center = split(x).concat(split(y));
     this._shader.uniforms.dimensions = [this.props.width, this.props.height];
-    this._shader.uniforms.color = [31 / 255, 186 / 255, 214 / 255, 1];
-    // this._shader.uniforms.color = [231 / 255, 76 / 255, 60 / 255, 1];
+    // this._shader.uniforms.color = [31 / 255, 186 / 255, 214 / 255, 1];
+    this._shader.uniforms.color = [231 / 255, 76 / 255, 60 / 255, 1];
     this._vao.bind();
     this._vao.draw(gl.POINTS, this.props.locations.length);
     this._vao.unbind();

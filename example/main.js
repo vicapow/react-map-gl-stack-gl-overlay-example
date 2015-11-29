@@ -46,7 +46,16 @@ var App = React.createClass({
       if (error) {
         throw error;
       }
-      this.setState({trips: trips.slice(0, 10000)});
+      // trips = [
+      //   [-90, 0],
+      //   [90, 0],
+      //   [0, 45],
+      //   [-90, 45],
+      //   [90, 45],
+      //   [0, 0]
+      // ];
+      // trips = trips.slice(0, 10000);
+      this.setState({trips: trips});
     }.bind(this));
   },
 
