@@ -26,9 +26,9 @@ var App = React.createClass({
       appWidth: window.innerWidth,
       appHeight: window.innerHeight,
       viewport: {
-        latitude: 0,
-        longitude: 0,
-        zoom: 0
+        latitude: 40.71415,
+        longitude: -74.006,
+        zoom: 20
       }
     };
   },
@@ -46,11 +46,12 @@ var App = React.createClass({
       if (error) {
         throw error;
       }
-      this.setState({trips: trips});
+      this.setState({trips: trips.slice(0, 10000)});
     }.bind(this));
   },
 
   _onChangeViewport: function _onChangeViewport(viewport) {
+    viewport.zoom = d3.round(viewport.zoom, 4);
     this.setState({viewport: viewport});
   },
 

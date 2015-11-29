@@ -13,6 +13,21 @@ var createBuffer = require('gl-buffer');
 var PI = Math.PI;
 var DEGREES_TO_RADIANS = PI / 180;
 
+// Convert a JavaScript double precision Number to the equivalent single
+// precision value.
+function float(value) {
+  var array = new Float32Array(1);
+  array[0] = value;
+  return array[0];
+}
+
+// Split a Number of double precision into two Numbers of single precision.
+function split(a) {
+  var tHi = float(a);
+  var tLo = a - tHi;
+  return [tHi, tLo];
+}
+
 var CanvasOverlay = React.createClass({
 
   displayName: 'StackGLOverlay',
@@ -52,14 +67,20 @@ var CanvasOverlay = React.createClass({
     var y;
     var phi;
     var lamda;
+    var xHiLo;
+    var yHiLo;
     for (var i = 0; i < locations.length; i++) {
       location = this.props.lngLatAccessor(locations[i]);
       lamda = location[0] * DEGREES_TO_RADIANS;
       phi = location[1] * DEGREES_TO_RADIANS;
       x = lamda + Math.PI;
       y = PI - Math.log(Math.tan(PI * 0.25 + phi * 0.5));
-      ret.push(x);
-      ret.push(y);
+      xHiLo = split(x);
+      yHiLo = split(y);
+      ret.push(xHiLo[0]);
+      ret.push(xHiLo[1]);
+      ret.push(yHiLo[0]);
+      ret.push(yHiLo[1]);
     }
     return ret;
   },
@@ -72,7 +93,7 @@ var CanvasOverlay = React.createClass({
     this._vao = createVAO(gl, [{
       buffer: createBuffer(gl, this._getLocationsBufferArray()),
       type: gl.FLOAT,
-      size: 2
+      size: 4
     }]);
   },
 
@@ -109,9 +130,9 @@ var CanvasOverlay = React.createClass({
     var y = scale * (PI - Math.log(Math.tan(PI * 0.25 + phi * 0.5)));
     var offset = [-x + dimensions[0] / 2, -y + dimensions[1] / 2];
     this._shader.uniforms.alpha = 0.1;
-    this._shader.uniforms.pointSize = 4;
-    this._shader.uniforms.scale = scale;
-    this._shader.uniforms.offset = offset;
+    this._shader.uniforms.pointSize = 32;
+    this._shader.uniforms.scale = split(scale);
+    this._shader.uniforms.offset = split(offset[0]).concat(split(offset[1]));
     this._shader.uniforms.dimensions = [this.props.width, this.props.height];
     this._shader.uniforms.color = [31 / 255, 186 / 255, 214 / 255, 1];
     // this._shader.uniforms.color = [231 / 255, 76 / 255, 60 / 255, 1];
