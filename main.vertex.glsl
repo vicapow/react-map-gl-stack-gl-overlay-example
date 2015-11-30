@@ -2,14 +2,11 @@ precision highp float;
 
 // A "double-float" is a double represented as two floats (hi and lo).
 
-// `coordinate` is a "double-float" of the vertex tile coordinates.
-// coordinate.xy: [0, 2π] along the tile X axis
-// coordinate.zw: [0, 2π] along the tile Y axis
-attribute vec4 coordinate;
+attribute vec2 coordinate;
 
-// A "double-float" of the current scale on the tile.
+// A double-float of the current scale on the tile.
 uniform vec2 scale;
-// A "double-float" of the current tile offset coordinates.
+// A double-float of the current tile offset coordinates.
 uniform vec4 center;
 uniform vec2 dimensions;
 uniform vec4 color;
@@ -77,21 +74,11 @@ void main() {
   vec2 centerX = center.xy;
   vec2 centerY = center.zw;
 
-  vec2 coordX = coordinate.xy;
-  vec2 coordY = coordinate.zw;
-
-  vec2 x = df64add(coordX, -centerX);
-  vec2 y = df64add(coordY, -centerY);
-  coordX = x;
-  coordY = y;
-
-  x = df64mult(coordX, scale);
-  y = df64mult(coordY, scale);
-
-  coordX = x;
-  coordY = y;
+  vec2 coordX = df64mult(df64add(vec2(coordinate.x, 0), -centerX), scale);
+  vec2 coordY = df64mult(df64add(vec2(coordinate.y, 0), -centerY), scale);
 
   vec2 point = vec2(coordX[0], coordY[0]);
+
   gl_Position = vec4(point / dimensions * 2.0, 0.0, 1.0);
   gl_PointSize = pointSize;
   fragColor = color;

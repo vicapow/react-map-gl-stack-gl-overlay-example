@@ -71,8 +71,6 @@ var CanvasOverlay = React.createClass({
     var y;
     var phi;
     var lamda;
-    var xHiLo;
-    var yHiLo;
     for (var i = 0; i < locations.length; i++) {
       location = this.props.lngLatAccessor(locations[i]);
       lamda = radians(location[0]);
@@ -81,12 +79,8 @@ var CanvasOverlay = React.createClass({
       x = (lamda + Math.PI) / Math.PI * 0.5;
       // [0, 1]
       y = (PI + Math.log(Math.tan(PI * 0.25 + phi * 0.5))) / Math.PI * 0.5;
-      xHiLo = split(x);
-      yHiLo = split(y);
-      ret.push(xHiLo[0]);
-      ret.push(xHiLo[1]);
-      ret.push(yHiLo[0]);
-      ret.push(yHiLo[1]);
+      ret.push(x);
+      ret.push(y);
     }
     return ret;
   },
@@ -99,7 +93,7 @@ var CanvasOverlay = React.createClass({
     this._vao = createVAO(gl, [{
       buffer: createBuffer(gl, this._getLocationsBufferArray()),
       type: gl.FLOAT,
-      size: 4
+      size: 2
     }]);
   },
 
