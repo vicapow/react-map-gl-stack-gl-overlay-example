@@ -3,19 +3,28 @@
 var document = require('global/document');
 var window = require('global/window');
 var React = require('react');
+var Immutable = require('immutable');
 var r = require('r-dom');
 var MapGL = require('react-map-gl');
-var process = require('global/process');
-var StackGLOverlay = require('react-map-gl-stack-gl-overlay');
+var StackGLOverlay = require('react-map-gl-stack-gl-overlay-example');
 var assign = require('object-assign');
 var d3 = require('d3');
 
-// var locations = require('example-cities');
-
-// This will get converted to a string by envify
-/* eslint-disable no-process-env */
-var mapboxApiAccessToken = process.env.MapboxAccessToken;
-/* eslint-enable no-process-env */
+var mapStyle = Immutable.fromJS({
+  version: 8,
+  sources: {},
+  layers: [
+    {
+      id: 'background',
+      type: 'background',
+      minzoom: 0,
+      maxzoom: 22,
+      layout: {
+        visibility: 'visible'
+      }
+    }
+  ]
+});
 
 var App = React.createClass({
 
@@ -26,9 +35,9 @@ var App = React.createClass({
       appWidth: window.innerWidth,
       appHeight: window.innerHeight,
       viewport: {
-        latitude: 40.71415,
-        longitude: -74.006,
-        zoom: 20
+        latitude: 40.74,
+        longitude: -73.98,
+        zoom: 12
       }
     };
   },
@@ -46,15 +55,6 @@ var App = React.createClass({
       if (error) {
         throw error;
       }
-      // trips = [
-      //   [-90, 0],
-      //   [90, 0],
-      //   [0, 45],
-      //   [-90, 45],
-      //   [90, 45],
-      //   [0, 0]
-      // ];
-      // trips = trips.slice(0, 10000);
       this.setState({trips: trips});
     }.bind(this));
   },
@@ -68,17 +68,48 @@ var App = React.createClass({
     var props = assign({}, this.state.viewport, {
       width: this.state.appWidth,
       height: this.state.appHeight,
-      mapboxApiAccessToken: mapboxApiAccessToken,
+      mapStyle: mapStyle,
       onChangeViewport: this._onChangeViewport
     });
-    return r(MapGL, props, [
-      this.state.trips ? r(StackGLOverlay, {
-        locations: this.state.trips,
-        lngLatAccessor: this._tripLngLatAccessor,
-        zoom: this.state.viewport.zoom,
-        longitude: this.state.viewport.longitude,
-        latitude: this.state.viewport.latitude
-      }) : null
+    return r.div([
+      r(MapGL, props, [
+        this.state.trips ? r(StackGLOverlay, {
+          locations: this.state.trips,
+          lngLatAccessor: this._tripLngLatAccessor,
+          zoom: this.state.viewport.zoom,
+          longitude: this.state.viewport.longitude,
+          latitude: this.state.viewport.latitude
+        }) : null
+      ]),
+      r.a({
+        style: {
+          position: 'absolute',
+          left: 10,
+          top: 10,
+          color: 'white',
+          fontFamily: 'Helvetica'
+        },
+        href: 'https://github.com/vicapow/react-map-gl-stack-gl-overlay-example'
+      }, 'An example of a react-map-gl overlay created with StackGL'),
+      r.span({
+        style: {
+          position: 'absolute',
+          left: 10,
+          bottom: 10,
+          color: 'white',
+          fontFamily: 'Helvetica',
+          fontSize: 12
+        }
+      }, [
+        r.span('1 million NYC Taxi pickup locations sampled from '),
+        r.a({
+          href: 'https://twitter.com/chris_whong'
+        }, '@chris_whong\'s'),
+        r.span(' '),
+        r.a({
+          href: 'http://www.andresmh.com/nyctaxitrips/'
+        }, 'FOIA request')
+      ])
     ]);
   }
 });

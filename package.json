@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "budo ./index.js --live -- -t envify  | bistre",
+    "start": "budo ./index.js --live -- -t | bistre",
+    "build": "browserify -g uglifyify ./index.js > bundle.js",
     "lint": "uber-standard",
     "precommit": "npm run lint -s",
     "prepush": "npm run lint -s"
@@ -18,6 +19,10 @@
   "author": "Victor Powell",
   "license": "ISC",
   "dependencies": {
+    "bistre": "^1.0.1",
+    "browserify": "^12.0.1",
+    "budo": "^6.0.1",
+    "d3": "^3.5.9",
     "get-canvas-context": "^1.0.1",
     "gl-buffer": "^2.1.2",
     "gl-now": "^1.4.0",
@@ -26,21 +31,15 @@
     "gl-vao": "^1.2.1",
     "global": "^4.3.0",
     "glslify": "^2.3.1",
+    "immutable": "^3.7.5",
     "object-assign": "^4.0.1",
-    "react-map-gl": "^0.2.4",
-    "r-dom": "^1.3.0",
-    "react": "^0.13.3",
-    "immutable": "^3.7.5",
-    "bistre": "^1.0.1",
-    "budo": "^6.0.1",
-    "d3": "^3.5.9",
-    "envify": "^3.4.0",
-    "immutable": "^3.7.5",
     "r-dom": "^1.3.0",
     "react": "^0.13.3",
     "react-map-gl": "^0.2.4",
+    "react-map-gl-stack-gl-overlay-example": "^0.1.0",
     "save": "^2.1.1",
-    "uber-standard": "^5.1.0"
+    "uber-standard": "^5.1.0",
+    "uglifyify": "^3.0.1"
   },
   "browserify": {
     "transform": [
