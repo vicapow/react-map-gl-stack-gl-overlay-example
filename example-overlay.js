@@ -126,12 +126,11 @@ var CanvasOverlay = React.createClass({
     var phi = radians(lnglat[1]);
     var x = (lambda + Math.PI) / Math.PI * 0.5;
     var y = (PI + Math.log(Math.tan(PI * 0.25 + phi * 0.5))) / Math.PI * 0.5;
-    this._shader.uniforms.alpha = 0.1;
-    this._shader.uniforms.pointSize = 16 * Math.pow(2, zoom - 20);
+    this._shader.uniforms.alpha = 0.001;
+    this._shader.uniforms.pointSize = 1;
     this._shader.uniforms.scale = split(scale);
     this._shader.uniforms.center = split(x).concat(split(y));
     this._shader.uniforms.dimensions = [this.props.width, this.props.height];
-    // this._shader.uniforms.color = [31 / 255, 186 / 255, 214 / 255, 1];
     this._shader.uniforms.color = [231 / 255, 76 / 255, 60 / 255, 1];
     this._vao.bind();
     this._vao.draw(gl.POINTS, this.props.locations.length);

@@ -2,20 +2,31 @@
 
 var document = require('global/document');
 var window = require('global/window');
+var console = require('global/console');
 var React = require('react');
+var Immutable = require('immutable');
 var r = require('r-dom');
 var MapGL = require('react-map-gl');
-var process = require('global/process');
 var ExampleOverlay = require('../example-overlay');
 var assign = require('object-assign');
 var d3 = require('d3');
 
-// var locations = require('example-cities');
-
-// This will get converted to a string by envify
-/* eslint-disable no-process-env */
-var mapboxApiAccessToken = process.env.MapboxAccessToken;
-/* eslint-enable no-process-env */
+// Don't show tiles in the map.
+var mapStyle = Immutable.fromJS({
+  version: 8,
+  sources: {},
+  layers: [
+    {
+      id: 'background',
+      type: 'background',
+      minzoom: 0,
+      maxzoom: 22,
+      paint: {
+        'background-color': 'black'
+      }
+    }
+  ]
+});
 
 var App = React.createClass({
 
@@ -26,9 +37,9 @@ var App = React.createClass({
       appWidth: window.innerWidth,
       appHeight: window.innerHeight,
       viewport: {
-        latitude: 40.71415,
-        longitude: -74.006,
-        zoom: 20
+        latitude: 40.74,
+        longitude: -73.97,
+        zoom: 12
       }
     };
   },
@@ -40,23 +51,24 @@ var App = React.createClass({
         appHeight: window.innerHeight
       });
     }.bind(this));
-    d3.csv('/picks.csv', function accessor(row) {
-      return [Number(row.longitude), Number(row.latitude)];
-    }, function response(error, trips) {
-      if (error) {
-        throw error;
-      }
-      // trips = [
-      //   [-90, 0],
-      //   [90, 0],
-      //   [0, 45],
-      //   [-90, 45],
-      //   [90, 45],
-      //   [0, 0]
-      // ];
-      // trips = trips.slice(0, 10000);
-      this.setState({trips: trips});
-    }.bind(this));
+
+    d3.xhr('./pickups-1m.csv.binary')
+      .responseType('arraybuffer')
+      .get(function response(error, xhr) {
+        if (error) {
+          throw error;
+        }
+        var payload = new Float32Array(xhr.response);
+        var trips = [];
+        var index = 0;
+        while (index < payload.length) {
+          trips.push([payload[index++], payload[index++]]);
+        }
+        /* eslint-disable no-console */
+        console.log('num trips', trips.length);
+        /* eslint-enable no-console */
+        this.setState({trips: trips});
+      }.bind(this));
   },
 
   _onChangeViewport: function _onChangeViewport(viewport) {
@@ -68,7 +80,7 @@ var App = React.createClass({
     var props = assign({}, this.state.viewport, {
       width: this.state.appWidth,
       height: this.state.appHeight,
-      mapboxApiAccessToken: mapboxApiAccessToken,
+      mapStyle: mapStyle,
       onChangeViewport: this._onChangeViewport
     });
     return r(MapGL, props, [
