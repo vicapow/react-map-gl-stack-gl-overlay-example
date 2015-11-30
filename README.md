@@ -3,6 +3,8 @@
 An experiment in using stackGL in a
 [react-map-gl](https://github.com/uber/react-map-gl) overlay.
 
+See a [live demo on gh-pages](http://vicapow.github.io/react-map-gl-stack-gl-overlay-example/)
+
 ![](demo.gif)
 
 This demo uses data from http://www.andresmh.com/nyctaxitrips/
