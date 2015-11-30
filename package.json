@@ -1,6 +1,6 @@
 {
   "name": "react-map-gl-stack-gl-overlay-example",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "example-overlay.js",
   "repository": {
