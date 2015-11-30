@@ -49,7 +49,7 @@ var App = React.createClass({
         appHeight: window.innerHeight
       });
     }.bind(this));
-    d3.xhr('/picks.binary')
+    d3.xhr('./picks.binary')
       .responseType('arraybuffer')
       .get(function response(error, xhr) {
         if (error) {
