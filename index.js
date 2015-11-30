@@ -49,14 +49,28 @@ var App = React.createClass({
         appHeight: window.innerHeight
       });
     }.bind(this));
-    d3.csv('/picks.csv', function accessor(row) {
-      return [Number(row.longitude), Number(row.latitude)];
-    }, function response(error, trips) {
-      if (error) {
-        throw error;
-      }
-      this.setState({trips: trips});
-    }.bind(this));
+    d3.xhr('/picks.binary')
+      .responseType('arraybuffer')
+      .get(function response(error, xhr) {
+        if (error) {
+          throw error;
+        }
+        var payload = new Float32Array(xhr.response);
+        var trips = [];
+        var index = 0;
+        while (index < payload.length) {
+          trips.push([payload[index++], payload[index++]]);
+        }
+        this.setState({trips: trips});
+      }.bind(this));
+    // d3.csv('/picks.csv', function accessor(row) {
+    //   return [Number(row.longitude), Number(row.latitude)];
+    // }, function response(error, trips) {
+    //   if (error) {
+    //     throw error;
+    //   }
+    //   this.setState({trips: trips});
+    // }.bind(this));
   },
 
   _onChangeViewport: function _onChangeViewport(viewport) {

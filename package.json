@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "budo ./index.js --live -- -t | bistre",
+    "start": "budo ./index.js --serve bundle.js --live| bistre",
     "build": "browserify -g uglifyify ./index.js > bundle.js",
     "lint": "uber-standard",
     "precommit": "npm run lint -s",
@@ -21,7 +21,7 @@
   "dependencies": {
     "bistre": "^1.0.1",
     "browserify": "^12.0.1",
-    "budo": "^6.0.1",
+    "budo": "^6.1.0",
     "d3": "^3.5.9",
     "get-canvas-context": "^1.0.1",
     "gl-buffer": "^2.1.2",
