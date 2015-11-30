@@ -19,8 +19,8 @@ var mapStyle = Immutable.fromJS({
       type: 'background',
       minzoom: 0,
       maxzoom: 22,
-      layout: {
-        visibility: 'visible'
+      paint: {
+        'background-color': 'black'
       }
     }
   ]
@@ -63,14 +63,6 @@ var App = React.createClass({
         }
         this.setState({trips: trips});
       }.bind(this));
-    // d3.csv('/picks.csv', function accessor(row) {
-    //   return [Number(row.longitude), Number(row.latitude)];
-    // }, function response(error, trips) {
-    //   if (error) {
-    //     throw error;
-    //   }
-    //   this.setState({trips: trips});
-    // }.bind(this));
   },
 
   _onChangeViewport: function _onChangeViewport(viewport) {
